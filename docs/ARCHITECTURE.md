@@ -26,5 +26,5 @@ S3 compatible object storage system that i can self-host. Perfect for me because
 **why?:** It's a powerful tool that getting hang of it would greatly help to optimize traffic and understand encoding/decoding flow, if you dare to create some project like this.
 
 **Redis:**<br>
-**why?:** Imagine 50 users uploading files to S3 storage simultaneously. It would transcode a file for one user but other users would wait very long, causing request timed out (408).
+**why?:** Imagine 50 users uploading files to S3 storage simultaneously. It would transcode a file for one user but other users would wait very long, causing request timed out (504).
 So redis fixes that problem allowing to hold jobs so there wouldn't be a timeout problem.
