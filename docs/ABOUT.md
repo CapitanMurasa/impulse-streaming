@@ -3,7 +3,7 @@ On this page I would publish my thoughts about the overall architecture of this 
 More importantly, this project is a ticket for a job in IT.
 
 ## Description
-A spiritual successor of minidlan, or simply minidlan but it allows to host you music globally and sync song between devices.
+A spiritual successor to MiniDLNA. It's like MiniDLNA, but it lets you host your music globally and stream your songs between devices
 
 ## Backstory
 Or simply "why audio streaming?"
