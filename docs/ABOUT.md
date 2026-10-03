@@ -1,4 +1,4 @@
-# This is an architectural page of this project
+# This is a description page of this project
 In this page i would publish my thoughts about overall architecture of this project.<br>
 More important this project is a ticket for a job in IT. Because it covers almost 80% what production standards require.
 ## Backstory
