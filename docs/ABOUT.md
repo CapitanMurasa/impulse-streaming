@@ -1,4 +1,4 @@
-# This is a description page of this project
+# This is a description page of ImPulse
 On this page I would publish my thoughts about the overall architecture of this project.<br>
 More importantly, this project is a ticket for a job in IT.
 
