@@ -1,6 +1,10 @@
 # This is a description page of this project
 On this page I would publish my thoughts about the overall architecture of this project.<br>
-More importantly, this project is a ticket for a job in IT, because it covers almost 80% of what production standards require.
+More importantly, this project is a ticket for a job in IT.
+
+## Description
+A spiritual successor of minidlan, or simply minidlan but it allows to host you music globally and sync song between devices.
+
 ## Backstory
 Or simply "why audio streaming?"
 
@@ -23,5 +27,4 @@ If we're speaking architecturally, it's actually a convenient language for backe
 **why?:** It's a powerful tool that getting the hang of it would greatly help to optimize traffic and understand the encoding/decoding flow, if you dare to create some project like this.
 
 **Redis:**<br>
-**why?:** Imagine 50 users uploading files to storage simultaneously. It would transcode a file for one user but other users would wait very long, causing a request timeout (503).
-So Redis fixes that problem by allowing it to hold jobs, so there wouldn't be a timeout problem.
+**why?:** Imagine 50 users uploading files at the same time, or someone spamming the login page with guesses. Redis works as a traffic cop, so abuse can't eat the server's resources. It's planned as an optional component after the MVP, a single instance could use an in-memory counter, but Redis keeps counts shared across restarts and instances, and I also want to learn it.
