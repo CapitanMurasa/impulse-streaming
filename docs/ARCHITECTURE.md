@@ -1,2 +1,4 @@
 # Architecture of Impulse
 This page covers the technical side of Impulse: the system overview, the main components, the data model and the key flows, with a lot of diagrams. The reasoning behind each decision is written separately as short ADRs in [`docs/adr/`](adr/).
+
+1) 
