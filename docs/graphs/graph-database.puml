@@ -1,0 +1,60 @@
+@startuml
+title Database schema
+
+entity "Users" as user{
+ * id: int <<PK>>
+ role: text
+ username: text
+ password_hash: text
+ --
+
+}
+
+entity "Albums" as albums{
+    * id: int <<PK>>
+    * name: text
+    * privacy: bool
+    description: text
+    
+    --
+    * user_id: int <<FK>>
+}
+
+entity "Tracks" as track{
+    * id: int <<PK>>
+    * public_id: uuid <<UNIQUE>>
+    * name: string
+    duration: int
+    bitrate: int
+    * status: text
+    * storage-key: text
+    --
+    Artist_id: int <<FK>>
+    Album_id: int <<FK>>
+    * Format_id: int <<FK>>
+    * User_id: int <<FK>>
+    
+}
+
+entity "Artists" as artist{
+    * id: int <<PK>>
+    * name: text
+}
+
+
+entity "Formats" as format{
+    * id: int <<PK>>
+    * name: string <<UNIQUE>>
+    * extension: text
+    * mime: text
+    * is_loseless: bool
+}
+
+track }o--o| albums
+track }o--o| artist
+track }o--|| format
+track }o--|| user
+albums }o--|| user
+
+
+@enduml
