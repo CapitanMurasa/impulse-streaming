@@ -11,14 +11,19 @@ end box
 participant "Library folder\n(volume)" as storage
 
 user -> client : upload file
-client -> api : GET /api/v1/upload?uploadinfo=info.json
-api -> api : check visibility and login
+client -> api : POST /api/v1/upload?uploadinfo=info.json
+api -> api : check permissions and login
 
 alt not allowed (anonymous)
-  api --> client : 401/403
+  api --> client : 401/403 not authorized \nor authenticated.
 else allowed
-  api -> storage: dedicate place for a file
+  api -> api: check file integrity
+  alt file's not valid
+  api --> client: 415 Unsupported Media Type
+  else
+  api -> storage: dedicate place for a file and store it
   storage --> api: return uuid
+  end
   alt if metadata exists
   api -> ffmpeg: exctract metadata trough ffprobe
   ffmpeg --> api: return metadata
@@ -27,7 +32,7 @@ else allowed
   api -> db: write path, codec and filename
   db --> api: ok
   end
-  api --> client: 201 
+  api --> client: 201 Created
 end
 
 client --> user : "file uploaded successfully"
