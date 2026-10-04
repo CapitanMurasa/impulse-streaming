@@ -1,0 +1,40 @@
+@startuml
+title Streaming a track
+
+actor User as user
+participant "Web client /\nother client" as client
+box "Docker (compose)" #EEEEEE
+  participant "Backend\n(Spring Boot)" as api
+  participant "FFmpeg\n(process)" as ffmpeg
+  database "PostgreSQL" as db
+end box
+participant "Library folder\n(volume)" as storage
+
+user -> client : press play
+client -> api : GET /api/v1/tracks/{id}/stream?bitrate=192\n(optional Range header)
+api -> api : check visibility and login
+
+alt not allowed (private item, anonymous)
+  api --> client : 404 Not Found
+else allowed
+  api -> db : find file path and format
+  db --> api : path, codec
+  alt original quality
+    api -> storage : read file from requested offset
+    storage --> api : audio bytes
+    api --> client : 200 / 206 Partial Content (audio bytes)
+  else transcode to Opus
+    alt transcode limit reached
+      api --> client : 503 Service Unavailable (Retry-After)
+    else slot free
+      api -> ffmpeg : start (input path, chosen bitrate)
+      ffmpeg -> storage : read original file
+      storage --> ffmpeg : audio bytes
+      ffmpeg --> api : Opus stream (pipe)
+      api --> client : 200 OK (Opus stream)
+    end
+  end
+end
+
+client --> user : audio plays
+@enduml
