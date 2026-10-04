@@ -1,0 +1,34 @@
+@startuml
+title Streaming a track
+
+actor User as user
+participant "Web client /\nother client" as client
+box "Docker (compose)" #EEEEEE
+  participant "Backend\n(Spring Boot)" as api
+  participant "FFmpeg\n(process)" as ffmpeg
+  database "PostgreSQL" as db
+end box
+participant "Library folder\n(volume)" as storage
+
+user -> client : upload file
+client -> api : GET /api/v1/upload?uploadinfo=info.json
+api -> api : check visibility and login
+
+alt not allowed (anonymous)
+  api --> client : 404 Not Found
+else allowed
+  api -> storage: dedicate place for a file
+  storage --> api: return uuid
+  alt if metadata exists
+  api -> ffmpeg: exctract metadata trought ffprobe
+  ffmpeg --> api: return metadata
+  api -> db: write path, codec and metadata
+  else if metadata not found
+  api -> db: write path, codec and filename
+  db --> api: ok
+  end
+  backend --> client: 200 OK
+end
+
+client --> user : "file uploaded successfully"
+@enduml
