@@ -27,7 +27,7 @@ else allowed
   api -> db: write path, codec and filename
   db --> api: ok
   end
-  backend --> client: 200 OK
+  api --> client: 200 OK
 end
 
 client --> user : "file uploaded successfully"
