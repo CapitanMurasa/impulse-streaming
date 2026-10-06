@@ -31,8 +31,18 @@ entity "Tracks" as track{
     --
     Artist_id: int <<FK>>
     Album_id: int <<FK>>
+    Playlist_id: int <<FK>>
     * Format_id: int <<FK>>
     * User_id: int <<FK>>
+    
+}
+
+entity "Playlists" as playlists{
+    * id: int <<PK>>
+    * name: text
+    * visibility: bool
+    --
+    user_id: int <<FK>>
     
 }
 
@@ -50,11 +60,13 @@ entity "Formats" as format{
     * is_loseless: bool
 }
 
+
 track }o--o| albums
 track }o--o| artist
 track }o--|| format
 track }o--|| user
-albums }o--|| user
+track }o--o| playlists
+playlists }o--o| user
 
 
 @enduml
