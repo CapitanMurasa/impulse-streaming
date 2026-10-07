@@ -5,35 +5,36 @@ actor User as user
 participant "Web client /\nother client" as client
 box "Docker (compose)" #EEEEEE
   participant "Backend\n(Spring Boot)" as api
-  participant "FFmpeg\n(process)" as ffmpeg
+  participant "Redis" as redis
   database "PostgreSQL" as db
 end box
-participant "Library folder\n(volume)" as storage
+participant "SeaweedFS\n(S3 compatiable storage)" as storage
 
 user -> client : press play
-client -> api : GET /api/v1/tracks/{id}/stream?bitrate=192\n(optional Range header)
-api -> api : check visibility and login
+client -> api : GET /api/v1/tracks/{id}/playlist.m3u8
+api -> redis: increment counter, check limit
+alt spam
+   redis-->api: spam
+   api--> client: 429 too many requests
+else allow
+   redis --> api: proceed
+   api -> api : check visibility and login
 
 alt not allowed (private item, anonymous)
   api --> client : 404 Not Found
 else allowed
-  api -> db : find file path and format
-  db --> api : path, codec
-  alt original quality
-    api -> storage : read file from requested offset
-    storage --> api : audio bytes
-    api --> client : 200 / 206 Partial Content (audio bytes)
-  else transcode to Opus
-    alt transcode limit reached
-      api --> client : 503 Service Unavailable (Retry-After)
-    else slot free
-      api -> ffmpeg : start (input path, chosen bitrate)
-      ffmpeg -> storage : read original file
-      storage --> ffmpeg : audio bytes
-      ffmpeg --> api : Opus stream (pipe)
-      api --> client : 200 OK (Opus stream)
-    end
-  end
+  api -> db : find file path, and it's status
+  db --> api : return path
+  api -> storage : get file by path
+  storage --> api : return file (.m3u8)
+  api --> client : 200 OK (HLS playlist)
+loop until stream ends
+  client -> api: GET /api/v1/tracks/{id}/segments/{n}
+  api -> storage: get N segment
+  storage --> api: return N segment
+  api --> client: play N segment
+end
+end
 end
 
 client --> user : audio plays
