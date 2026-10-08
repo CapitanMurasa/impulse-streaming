@@ -107,3 +107,12 @@ buildNumber.properties
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+/src/backend/impulse/.gitattributes:Zone.Identifier
+/src/backend/impulse/.gitignore:Zone.Identifier
+/src/backend/impulse/src/main/resources/application.properties:Zone.Identifier
+/src/backend/impulse/HELP.md:Zone.Identifier
+/src/backend/impulse/mvnw
+/src/backend/impulse/mvnw.cmd
+/src/backend/impulse/mvnw.cmd:Zone.Identifier
+/src/backend/impulse/mvnw:Zone.Identifier
+/src/backend/impulse/pom.xml:Zone.Identifier
