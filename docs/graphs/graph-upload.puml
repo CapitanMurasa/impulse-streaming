@@ -5,32 +5,44 @@ actor User as user
 participant "Web client /\nother client" as client
 box "Docker (compose)" #EEEEEE
   participant "Backend\n(Spring Boot)" as api
+  participant "Redis" as redis
   participant "FFmpeg\n(process)" as ffmpeg
   database "PostgreSQL" as db
+  participant "S3 storage\n(seaweedfs)" as storage
 end box
-participant "Library folder\n(volume)" as storage
 
 user -> client : upload file
-client -> api : POST /api/v1/upload?uploadinfo=info.json
+client -> api : POST /api/v1/upload
 api -> api : check permissions and login
 
 alt not allowed (anonymous)
   api --> client : 401/403 not authorized \nor authenticated.
 else allowed
+  api -> redis : get session id
+  redis --> api: return session id
   api -> api: check file integrity
   alt file's not valid
   api --> client: 415 Unsupported Media Type
   else
   api -> storage: dedicate place for a file and store it
   storage --> api: return uuid
+  api -> db: write path to original file
   end
+  api -> redis: queue ffmpeg worker
+  redis --> api: PENDING status
+  api -> db: track pending status
+  api --> client: 202 accepted
+  client --> user: "File is currently transcoding. Wait..."
+  redis -> ffmpeg: exctract metadata trough ffprobe\n and transcode file for HLS
+  ffmpeg --> redis: finished status
+  ffmpeg -> storage: dedicate storage for transcoded file\n plus segments
+  ffmpeg --> api: return metadata and path to .m3u8 file.
   alt if metadata exists
-  api -> ffmpeg: exctract metadata trough ffprobe
-  ffmpeg --> api: return metadata
   api -> db: write path, codec and metadata
+  db --> api: finished transaction
   else if metadata not found
   api -> db: write path, codec and filename
-  db --> api: ok
+  db --> api: finished transaction
   end
   api --> client: 201 Created
 end
