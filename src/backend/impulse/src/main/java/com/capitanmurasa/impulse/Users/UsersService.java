@@ -1,5 +1,7 @@
 package com.capitanmurasa.impulse.Users;
 
+import jakarta.servlet.http.HttpSession;
+import org.springframework.http.ResponseEntity;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -16,22 +18,24 @@ public class UsersService {
     }
 
     @Transactional
-    public int register(String username, String password) {
-        users.save(new UsersModel(username, password));
-        return 200;
+    public UsersModel register(String username, String password, HttpSession session) {
+        session.setAttribute("user", username);
+        return users.save(new UsersModel(username, password));
     }
 
     @Transactional
-    public int login(String username, String password){
+    public Optional<UsersModel> login(String username, String password, HttpSession session){
         UsersModel userid = users.findByUsername(username);
-        if(userid == null){
-            return 401;
+        if(userid != null){
+            if (userid.getPassword().equals(password)){
+                session.setAttribute("user", username);
+                return Optional.of(userid);
+            }
+            else{
+                return Optional.empty();
+            }
         }
-        else if (userid.getPassword().equals(password)){
-            return 200;
-        }
-        else {
-            return 401;
-        }
+
+        return Optional.empty();
     }
 }
