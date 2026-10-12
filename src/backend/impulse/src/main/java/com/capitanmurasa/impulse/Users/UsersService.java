@@ -1,5 +1,7 @@
 package com.capitanmurasa.impulse.Users;
 
+import jakarta.servlet.http.HttpSession;
+import org.springframework.http.ResponseEntity;
 
 import com.capitanmurasa.impulse.Services.EncryptManager;
 import jakarta.transaction.Transactional;
@@ -21,22 +23,24 @@ public class UsersService {
     }
 
     @Transactional
-    public int register(String username, String password) {
-        users.save(new UsersModel(username, encrypt.EncryptPassword(password)));
-        return 200;
+    public UsersModel register(String username, String password, HttpSession session) {
+        session.setAttribute("user", username);
+        return users.save(new UsersModel(username, encrypt.EncryptPassword(password)));
     }
 
     @Transactional
-    public int login(String username, String password){
+    public Optional<UsersModel> login(String username, String password, HttpSession session){
         UsersModel userid = users.findByUsername(username);
-        if(userid == null){
-            return 401;
+        if(userid != null){
+            if (encrypt.DecryptPassword(password, userid.getPassword())){
+                session.setAttribute("user", username);
+                return Optional.of(userid);
+            }
+            else{
+                return Optional.empty();
+            }
         }
-        else if (encrypt.DecryptPassword(password, userid.getPassword())){
-            return 200;
-        }
-        else {
-            return 401;
-        }
+
+        return Optional.empty();
     }
 }
