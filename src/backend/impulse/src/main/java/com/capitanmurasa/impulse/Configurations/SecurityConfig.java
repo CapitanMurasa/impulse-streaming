@@ -1,4 +1,4 @@
-package com.capitanmurasa.impulse;
+package com.capitanmurasa.impulse.Configurations;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

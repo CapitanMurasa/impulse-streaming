@@ -2,7 +2,9 @@ package com.capitanmurasa.impulse.Services;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class EncryptManager {
+
     private final BCryptPasswordEncoder passwordEncoder;
+
     public EncryptManager(){
          this.passwordEncoder = new BCryptPasswordEncoder();
     }
