@@ -11,7 +11,7 @@ end box
 participant "SeaweedFS\n(S3 compatiable storage)" as storage
 
 user -> client : press play
-client -> api : GET /api/v1/tracks/{id}/playlist.m3u8
+client -> api : GET /api/v1/tracks/{id}
 api -> redis: increment counter, check limit
 alt spam
    redis-->api: spam
@@ -26,14 +26,8 @@ else allowed
   api -> db : find file path, and it's status
   db --> api : return path
   api -> storage : get file by path
-  storage --> api : return file (.m3u8)
-  api --> client : 200 OK (HLS playlist)
-loop until stream ends
-  client -> api: GET /api/v1/tracks/{id}/segments/{n}
-  api -> storage: get N segment
-  storage --> api: return N segment
-  api --> client: play N segment
-end
+  storage --> api : return file
+  api --> client : 200 OK (opus pipe)
 end
 end
 

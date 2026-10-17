@@ -26,23 +26,12 @@ else allowed
   else
   api -> storage: dedicate place for a file and store it
   storage --> api: return uuid
-  api -> db: write path to original file
-  end
-  api -> redis: queue ffmpeg worker
-  redis --> api: PENDING status
-  api -> db: track pending status
-  api --> client: 202 accepted
-  client --> user: "File is currently transcoding. Wait..."
-  redis -> ffmpeg: exctract metadata trough ffprobe\n and transcode file for HLS
-  ffmpeg --> redis: finished status
-  ffmpeg -> storage: dedicate storage for transcoded file\n plus segments
-  ffmpeg --> api: return metadata and path to .m3u8 file.
+  api -> ffmpeg: ffprobe worker
+  ffmpeg --> api: return metadata if exists
   alt if metadata exists
   api -> db: write path, codec and metadata
-  db --> api: finished transaction
   else if metadata not found
   api -> db: write path, codec and filename
-  db --> api: finished transaction
   end
   api --> client: 201 Created
 end

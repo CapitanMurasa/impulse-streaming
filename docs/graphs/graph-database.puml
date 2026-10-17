@@ -1,49 +1,57 @@
 @startuml
 title Database schema
 
+entity "Tracks_Playlists" as tp{
+    * id: int <<PK>>
+    --
+    * playlist_id: int <<FK>>
+    * track_id: int <<FK>>
+}
+
 entity "Users" as user{
  * id: int <<PK>>
- role: text
- username: text
- password_hash: text
- --
+ * role: text
+ * username: text <<UNIQUE>>
+   display_name: text
+ * password_hash: text
 
 }
 
 entity "Albums" as albums{
     * id: int <<PK>>
     * name: text
-    * privacy: bool
     description: text
-    
     --
-    * user_id: int <<FK>>
+    * artist_id: int <<FK>>
 }
 
 entity "Tracks" as track{
     * id: int <<PK>>
     * public_id: uuid <<UNIQUE>>
-    * name: string
-    duration: int
-    bitrate: int
-    * status: text
-    * storage-key: text
+    * name: text
+    * status: enum
+    * storage_key: text <<UNIQUE>>
+    * public: bool
+    sha256: char(64)
+    size_bytes: int
+    duration_s: int
+    bitrate_bps: int
     --
+    * format_id: int <<FK>>
+    * User_id: int <<FK>>
+    Genre_id: int <<FK>>
     Artist_id: int <<FK>>
     Album_id: int <<FK>>
-    Playlist_id: int <<FK>>
-    * Format_id: int <<FK>>
-    * User_id: int <<FK>>
-    
+
 }
 
 entity "Playlists" as playlists{
     * id: int <<PK>>
     * name: text
-    * visibility: bool
+    * public: bool
     --
-    user_id: int <<FK>>
-    
+    * user_id: int <<FK>>
+
 }
 
 entity "Artists" as artist{
@@ -51,22 +59,39 @@ entity "Artists" as artist{
     * name: text
 }
 
+entity "Genre" as genre{
+    * id: int <<PK>>
+    * name: text
+}
 
 entity "Formats" as format{
     * id: int <<PK>>
-    * name: string <<UNIQUE>>
+    * name: text <<UNIQUE>>
     * extension: text
-    * mime: text
-    * is_loseless: bool
 }
 
 
+entity "Track Upload job" as job{
+    * id: int <<PK>>
+    upload_created: timestamptz
+    upload_begin: timestamptz
+    upload_end: timestamptz
+    error: text
+    attempts: int
+    --
+    * track_id: int <<FK>>
+}
+
+tp }o--|| track
+tp }o--|| playlists
+job }o--|| track
+track }o--|| format
 track }o--o| albums
 track }o--o| artist
-track }o--|| format
 track }o--|| user
-track }o--o| playlists
-playlists }o--o| user
+track }o--o| genre
+artist }o--|| albums
+playlists }o--|| user
 
 
 @enduml
