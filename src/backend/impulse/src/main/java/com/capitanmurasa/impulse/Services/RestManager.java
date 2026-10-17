@@ -49,7 +49,7 @@ public class RestManager {
         else{
             status.setResponseStatus(JsonResponseStatus.FAIL);
             status.setData("Can't login...");
-            entity = new ResponseEntity<>(status,headers, HttpStatus.CREATED);
+            entity = new ResponseEntity<>(status,headers, HttpStatus.NOT_FOUND);
             return entity;
         }
     }
@@ -69,7 +69,7 @@ public class RestManager {
             status.setName(user);
             status.setData("Welcome back! " + user);
         }
-        entity = new ResponseEntity<>(status,headers, HttpStatus.CREATED);
+        entity = new ResponseEntity<>(status,headers, HttpStatus.OK);
         return entity;
     }
 
@@ -82,7 +82,7 @@ public class RestManager {
         status.setResponseStatus(JsonResponseStatus.OK);
         session.invalidate();
 
-        entity = new ResponseEntity<>(status,headers, HttpStatus.CREATED);
+        entity = new ResponseEntity<>(status,headers, HttpStatus.OK);
 
         return entity;
     }
@@ -106,7 +106,7 @@ public class RestManager {
         else{
             status.setResponseStatus(JsonResponseStatus.FAIL);
             status.setData("Error in creating user...");
-            entity = new ResponseEntity<>(status,headers, HttpStatus.CREATED);
+            entity = new ResponseEntity<>(status,headers, HttpStatus.INTERNAL_SERVER_ERROR);
             return entity;
         }
     }
