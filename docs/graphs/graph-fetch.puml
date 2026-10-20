@@ -1,0 +1,41 @@
+@startuml
+title Fetching content from API
+
+actor User as user
+participant "Web client /\nother client" as client
+box "Docker (compose)" #EEEEEE
+  participant "Backend\n(Spring Boot)" as api
+  participant "Redis" as redis
+  database "PostgreSQL" as db
+end box
+participant "SeaweedFS\n(S3 compatiable storage)" as storage
+
+user -> client : enters the site \nor connects trough other client
+client -> api : GET /api/v1/sync
+api -> redis: increment counter, check limit
+alt spam
+   redis-->api: spam
+   api--> client: 429 too many requests
+else allow
+   redis --> api: proceed
+   api -> api : check whether user is logined in
+
+alt not loggined in
+  api --> client : 401 Unauthorized
+else allowed
+  api -> db : find file path, and it's status
+  db --> api : return path
+  api -> storage : get file by path
+  storage --> api : return file (.m3u8)
+  api --> client : 200 OK (HLS playlist)
+loop until stream ends
+  client -> api: GET /api/v1/tracks/{id}/segments/{n}
+  api -> storage: get N segment
+  storage --> api: return N segment
+  api --> client: play N segment
+end
+end
+end
+
+client --> user : audio plays
+@enduml
