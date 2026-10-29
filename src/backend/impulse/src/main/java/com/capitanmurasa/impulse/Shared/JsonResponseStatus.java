@@ -1,4 +1,4 @@
-package com.capitanmurasa.impulse.Beans;
+package com.capitanmurasa.impulse.Shared;
 
 public enum JsonResponseStatus {
     OK,

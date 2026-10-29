@@ -1,7 +1,6 @@
-package com.capitanmurasa.impulse.Beans;
+package com.capitanmurasa.impulse.Shared;
 
 import lombok.Data;
-import org.springframework.boot.jackson.autoconfigure.JacksonProperties;
 
 
 @Data
