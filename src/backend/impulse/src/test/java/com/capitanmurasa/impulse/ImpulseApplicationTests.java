@@ -1,8 +1,8 @@
 package com.capitanmurasa.impulse;
 
-import com.capitanmurasa.impulse.Users.UserRepository;
-import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,8 +20,7 @@ class ImpulseApplicationTests {
 	static PostgreSQLContainer postgres =
 			new PostgreSQLContainer("postgres:17-alpine").withInitScript("init.sql");
 
-	@Autowired
-	private UserRepository userRepository;
+
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -38,6 +37,5 @@ class ImpulseApplicationTests {
 		assertEquals(1, query);
 	}
 
-	@Test
 
 }

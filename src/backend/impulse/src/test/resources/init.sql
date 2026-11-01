@@ -5,7 +5,8 @@ BEGIN;
 CREATE TABLE users (
                        id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                        role TEXT,
-                       username TEXT,
+                       username TEXT UNIQUE,
+                       displayname TEXT,
                        password_hash TEXT
 );
 

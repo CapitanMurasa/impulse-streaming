@@ -93,7 +93,7 @@ public class RestManager {
 
 
 
-        if(registerReq.getName().equals(username)){
+        if(registerReq.getUserName().equals(username)){
             status.setResponseStatus(JsonResponseStatus.OK);
             status.setName(username);
             status.setData("User Created successfully!");
