@@ -12,18 +12,22 @@ public class UsersModel {
     @Column(name = "id")
     private int id;
 
+    @Column(name = "role")
+    private String role;
+
     @Column(name = "username")
     private String username;
 
-    @Column(name = "password")
+    @Column(name = "password_hash")
     private String password;
 
     public UsersModel(){
 
     }
-    public UsersModel(String name, String password){
+    public UsersModel(String name, String password, String role){
         this.username = name;
         this.password = password;
+        this.role = role;
     }
 
     public int getId() {
@@ -33,6 +37,10 @@ public class UsersModel {
     public void setId(int id) {
         this.id = id;
     }
+
+    public String getRole() {return role;};
+
+    public void setRole(String role){ this.role = role; };
 
     public String getName() {
         return username;

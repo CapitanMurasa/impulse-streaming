@@ -24,7 +24,7 @@ public class UsersService {
     @Transactional
     public UsersModel register(String username, String password, HttpSession session) {
         session.setAttribute("user", username);
-        return users.save(new UsersModel(username, encrypt.EncryptPassword(password)));
+        return users.save(new UsersModel(username, encrypt.EncryptPassword(password), "user"));
     }
 
     @Transactional
