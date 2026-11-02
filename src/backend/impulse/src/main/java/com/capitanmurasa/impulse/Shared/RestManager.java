@@ -40,7 +40,7 @@ public class RestManager {
             status.setResponseStatus(JsonResponseStatus.OK);
             status.setName(username);
             status.setData("You successfully logged in!");
-            entity = new ResponseEntity<>(status,headers, HttpStatus.CREATED);
+            entity = new ResponseEntity<>(status,headers, HttpStatus.OK);
             return entity;
         }
         else{
