@@ -1,9 +1,7 @@
-package com.capitanmurasa.impulse.Services;
+package com.capitanmurasa.impulse.Shared;
 
 
 
-import com.capitanmurasa.impulse.Beans.DomainBean;
-import com.capitanmurasa.impulse.Beans.JsonResponseStatus;
 import com.capitanmurasa.impulse.Users.UsersModel;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpHeaders;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.capitanmurasa.impulse.Users.UsersService;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController
@@ -43,7 +40,7 @@ public class RestManager {
             status.setResponseStatus(JsonResponseStatus.OK);
             status.setName(username);
             status.setData("You successfully logged in!");
-            entity = new ResponseEntity<>(status,headers, HttpStatus.CREATED);
+            entity = new ResponseEntity<>(status,headers, HttpStatus.OK);
             return entity;
         }
         else{
@@ -96,7 +93,7 @@ public class RestManager {
 
 
 
-        if(registerReq.getName().equals(username)){
+        if(registerReq.getUserName().equals(username)){
             status.setResponseStatus(JsonResponseStatus.OK);
             status.setName(username);
             status.setData("User Created successfully!");

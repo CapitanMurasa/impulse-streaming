@@ -1,4 +1,4 @@
-package com.capitanmurasa.impulse.Services;
+package com.capitanmurasa.impulse.Shared;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class EncryptManager {

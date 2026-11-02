@@ -1,9 +1,8 @@
 package com.capitanmurasa.impulse.Users;
 
 import jakarta.servlet.http.HttpSession;
-import org.springframework.http.ResponseEntity;
 
-import com.capitanmurasa.impulse.Services.EncryptManager;
+import com.capitanmurasa.impulse.Shared.EncryptManager;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -24,23 +23,27 @@ public class UsersService {
 
     @Transactional
     public UsersModel register(String username, String password, HttpSession session) {
-        session.setAttribute("user", username);
-        return users.save(new UsersModel(username, encrypt.EncryptPassword(password)));
+        //session.setAttribute("user", username);
+        return users.save(new UsersModel(username, encrypt.EncryptPassword(password), "user", username));
     }
 
     @Transactional
     public Optional<UsersModel> login(String username, String password, HttpSession session){
         UsersModel userid = users.findByUsername(username);
-        if(userid != null){
-            if (encrypt.DecryptPassword(password, userid.getPassword())){
-                session.setAttribute("user", username);
-                return Optional.of(userid);
+        if (session.getAttribute("user") == null) {
+            if (userid != null) {
+                if (encrypt.DecryptPassword(password, userid.getPassword())) {
+                    session.setAttribute("user", username);
+                    return Optional.of(userid);
+                } else {
+                    return Optional.empty();
+                }
             }
-            else{
-                return Optional.empty();
-            }
-        }
 
-        return Optional.empty();
+            return Optional.empty();
+        }
+        else {
+            return Optional.empty();
+        }
     }
 }
