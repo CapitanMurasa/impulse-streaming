@@ -13,6 +13,8 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.postgresql.PostgreSQLContainer;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -36,12 +38,12 @@ class UserRepositoryTest {
         UsersModel testUserInit = userRepository.save(new UsersModel("test", "lol",
                 "user", "test"));
 
-        UsersModel testUserFind = userRepository.findByUsername("test");
+        Optional<UsersModel> testUserFind = userRepository.findByUsername("test");
 
         assertNotNull(testUserInit);
         assertEquals("test", testUserInit.getUserName());
         assertNotNull(testUserFind);
-        assertEquals("test", testUserFind.getUserName());
+        assertEquals("test", testUserFind.get().getUserName());
     }
 
     @Test
@@ -51,12 +53,12 @@ class UserRepositoryTest {
         UsersModel testUserHashInit = userRepository.save(new UsersModel("test",
                 encryptManager.EncryptPassword("lol"), "user", "test"));
 
-        UsersModel testUserHashFind = userRepository.findByUsername("test");
+        Optional<UsersModel> testUserHashFind = userRepository.findByUsername("test");
 
         assertNotNull(testUserHashInit);
         assertNotNull(testUserHashFind);
-        assertNotNull(testUserHashFind.getPassword());
-        assertTrue((encryptManager.DecryptPassword("lol", testUserHashFind.getPassword())));
+        assertNotNull(testUserHashFind.get().getPassword());
+        assertTrue((encryptManager.DecryptPassword("lol", testUserHashFind.get().getPassword())));
     }
 
     @Test
@@ -66,12 +68,12 @@ class UserRepositoryTest {
         UsersModel testUserHashInit = userRepository.save(new UsersModel("test1",
                 encryptManager.EncryptPassword("lol"), "user", "test"));
 
-        UsersModel testUserHashFind = userRepository.findByUsername("test1");
+        Optional<UsersModel> testUserHashFind = userRepository.findByUsername("test1");
 
         assertNotNull(testUserHashInit);
         assertNotNull(testUserHashFind);
-        assertNotNull(testUserHashFind.getPassword());
-        assertFalse((encryptManager.DecryptPassword("notlol", testUserHashFind.getPassword())));
+        assertNotNull(testUserHashFind.get().getPassword());
+        assertFalse((encryptManager.DecryptPassword("notlol", testUserHashFind.get().getPassword())));
     }
 
     @Test

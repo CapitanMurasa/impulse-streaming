@@ -29,12 +29,12 @@ public class UsersService {
 
     @Transactional
     public Optional<UsersModel> login(String username, String password, HttpSession session){
-        UsersModel userid = users.findByUsername(username);
+        Optional<UsersModel> userid = users.findByUsername(username);
         if (session.getAttribute("user") == null) {
-            if (userid != null) {
-                if (encrypt.DecryptPassword(password, userid.getPassword())) {
+            if (userid.isPresent()) {
+                if (encrypt.DecryptPassword(password, userid.get().getPassword())) {
                     session.setAttribute("user", username);
-                    return Optional.of(userid);
+                    return userid;
                 } else {
                     return Optional.empty();
                 }
