@@ -24,7 +24,7 @@ CREATE TABLE formats (
                          name VARCHAR(255) NOT NULL UNIQUE,
                          extension TEXT NOT NULL,
                          mime TEXT NOT NULL,
-                         is_loseless BOOLEAN NOT NULL
+                         is_lossless BOOLEAN NOT NULL
 );
 
 
@@ -68,7 +68,6 @@ CREATE TABLE tracks (
 
                         artist_id INTEGER,
                         album_id INTEGER,
-                        playlist_id INTEGER,
                         format_id INTEGER NOT NULL,
                         user_id INTEGER NOT NULL,
 
@@ -82,11 +81,6 @@ CREATE TABLE tracks (
                                 REFERENCES albums(id)
                                 ON DELETE SET NULL,
 
-                        CONSTRAINT fk_tracks_playlist
-                            FOREIGN KEY (playlist_id)
-                                REFERENCES playlists(id)
-                                ON DELETE SET NULL,
-
                         CONSTRAINT fk_tracks_format
                             FOREIGN KEY (format_id)
                                 REFERENCES formats(id)
@@ -98,6 +92,17 @@ CREATE TABLE tracks (
                                 ON DELETE CASCADE
 );
 
+CREATE TABLE playlist_tracks (
+                        playlist_id INTEGER NOT NULL
+                            REFERENCES playlists(id) ON DELETE CASCADE,
+
+                        track_id INTEGER NOT NULL
+                            REFERENCES tracks(id) ON DELETE CASCADE,
+
+                        position INTEGER NOT NULL,
+
+                        PRIMARY KEY (playlist_id, track_id)
+);
 
 CREATE INDEX idx_albums_user_id
     ON albums(user_id);
@@ -111,8 +116,8 @@ CREATE INDEX idx_tracks_artist_id
 CREATE INDEX idx_tracks_album_id
     ON tracks(album_id);
 
-CREATE INDEX idx_tracks_playlist_id
-    ON tracks(playlist_id);
+CREATE INDEX idx_playlist_tracks_track_id
+    ON playlist_tracks(track_id);
 
 CREATE INDEX idx_tracks_format_id
     ON tracks(format_id);
